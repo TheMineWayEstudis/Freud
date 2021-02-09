@@ -19,7 +19,7 @@ public class Freud {
     String nominacioJoanPeli = "PeliJoan";
     String nominacioBettePeli = "PeliBette";
     
-    public static void main(String[] args) {  
+    public static void main(String[] args) {
         while(true) {
             Opcions opcio = MostrarMenu("Menú principal",
                     new Menu("Anotar pel·lícula",Opcions.anotar,(nominacioJoan == null || nominacioBette == null) && !bette_guanyadores.Full() && !joan_guanyadores.Full()),
@@ -35,6 +35,8 @@ public class Freud {
                 case ferRecompte: FerRecompte(); break;
             }
         }
+        System.out.println("\n--- RECOMPTE FINAL ---");
+        FerRecompte();
     }
     
     static void AnotarPelicula() {
