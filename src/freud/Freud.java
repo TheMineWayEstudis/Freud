@@ -12,19 +12,19 @@ public class Freud {
     static CustomArray bette_guanyadores = new CustomArray(25);
     static CustomArray joan_guanyadores = new CustomArray(25);
     static int[] bette_punts = new int[4], joan_punts = new int[4];
-    
+
     static Nominacio nominacioJoan = null;
     static Nominacio nominacioBette = null;
-    
+
     String nominacioJoanPeli = "PeliJoan";
     String nominacioBettePeli = "PeliBette";
-    
+
     public static void main(String[] args) {
         while(true) {
             Opcions opcio = MostrarMenu("Menú principal",
-                    new Menu("Anotar pel·lícula",Opcions.anotar,(nominacioJoan == null || nominacioBette == null) && !bette_guanyadores.Full() && !joan_guanyadores.Full()),
+                    new Menu("Anotar pel·lícula",Opcions.anotar,(nominacioJoan == null || nominacioBette == null) && !bette_guanyadores.Full() && !joan_guanyadores.Full() && !nominacions.Full()),
                     new Menu("Assistir a la Gala",Opcions.assistir,nominacioJoan != null && nominacioBette != null),
-                    new Menu("Eliminar pel·lícula",Opcions.eliminar,nominacions.FirstUnused() > 1),
+                    new Menu("Eliminar pel·lícula",Opcions.eliminar,nominacions.Count() > 0),
                     new Menu("Fer recompte",Opcions.ferRecompte,true),
                     new Menu("Sortir",Opcions.sortir,true));
             if(opcio == Opcions.sortir) break;
@@ -38,7 +38,7 @@ public class Freud {
         System.out.println("\n--- RECOMPTE FINAL ---");
         FerRecompte();
     }
-    
+
     static void AnotarPelicula() {
         String nomPelicula = Ask("Nom de la pel·lícula: ");
         String joanText = nominacioJoan == null ? "Joan":"", betteText = nominacioBette == null ? "Bette":"";
@@ -51,20 +51,20 @@ public class Freud {
         if(personaNominada == Opcions.Joan)
             nominacioJoan = new Nominacio(nomPelicula,"Joan");
         else nominacioBette = new Nominacio(nomPelicula,"Bette");
-    }  
+    }
     static void AssistirGala() {
         System.out.println("Votació per a " + nominacioBette.pelicula + " - Bette");
         bette_punts[0] = Votar("interpretació");
         bette_punts[1] = Votar("vestuari");
         bette_punts[2] = Votar("ambientació");
         bette_punts[3] = Votar("adaptació");
-        
+
         System.out.println("Votació per a " + nominacioJoan.pelicula + " - Joan");
         joan_punts[0] = Votar("interpretació");
         joan_punts[1] = Votar("vestuari");
         joan_punts[2] = Votar("ambientació");
         joan_punts[3] = Votar("adaptació");
-        
+
         /* En cas d'empat guanya Joan */
         Nominacio guanyador = Sum(joan_punts) >= Sum(bette_punts) ? nominacioJoan : nominacioBette;
         Nominacio perdedor = Sum(joan_punts) < Sum(bette_punts) ? nominacioJoan : nominacioBette;
@@ -94,16 +94,16 @@ public class Freud {
     static void FerRecompte() {
         System.out.println("\n--- Pel·lícules de Bette ---");
         System.out.println("Ha guanyat " + bette_guanyadores.Count());
-         System.out.println("\n--- Pel·lícules de Joan ---");
+        System.out.println("\n--- Pel·lícules de Joan ---");
         System.out.println("Ha guanyat " + joan_guanyadores.Count());
         System.out.println();
     }
-    
+
     static int Votar(String text) {
         //Votarem!
         return GetNumber("Puntua la categoria de " + text + " del 0 al 25: ",0,25);
     }
-    
+
     static Opcions MostrarMenu(String titol, Menu... menu) {
         System.out.println(titol);
         for(int i = 0; i < menu.length; i++) menu[i].Print(i);
@@ -124,13 +124,13 @@ public class Freud {
         System.out.print("\n" + text);
         while(true) {
             String userInput = scanner.next();
-            
+
             for(String valor: valors)
                 if(valor.equals(userInput) && !valor.equals("")) return userInput;
             Error("Valor incorrecte!");
         }
     }
-    
+
     static int Sum(int[] array) {
         int sum = 0;
         for(int valor: array) sum+= valor;
@@ -140,21 +140,21 @@ public class Freud {
         System.out.println(text);
         while(true) {
             int num = scanner.nextInt();
-            if(num >= min && num <= max) return num; 
+            if(num >= min && num <= max) return num;
             Error("Valor fora de rang");
         }
     }
     static void Error(String text) {
         System.out.println("[!] " + text);
     }
-    
+
     public static enum Opcions {
         anotar,
         assistir,
         eliminar,
         ferRecompte,
         sortir,
-        
+
         Joan,
         Bette
     }
@@ -167,7 +167,7 @@ public class Freud {
             opcio = _opcio;
             enabled = _enabled;
         }
-        
+
         public void Print(int num) {
             String _text = enabled ? text : text + " [DESHABILITAT]";
             System.out.println((num+1) + ". " + _text);
@@ -175,7 +175,7 @@ public class Freud {
     }
     static class Pelicula {
         public String titol;
-        
+
         public Pelicula(String _titol) {
             titol = _titol;
         }
@@ -183,13 +183,13 @@ public class Freud {
     static class Nominacio {
         String pelicula;
         String actor;
-        
+
         public Nominacio(String pelicula, String actor) {
             this.pelicula = pelicula;
             this.actor = actor;
         }
     }
-    
+
     static class CustomArray {
         /*
             És una mena de Llista no dinàmica.
@@ -197,13 +197,13 @@ public class Freud {
             Alguns métodes es basen en els Queues (no se si existeixen en Java).
             Creat per Joel Campos - V 1.0.0
         */
-        
+
         public String[] valor; //Contingut de l'"Array".
-        
+
         public CustomArray(int len) {
             valor = new String[len]; //Constructor de l'"Array".
         }
-        
+
         public String[] Get() {
             return valor;
         }
@@ -242,7 +242,7 @@ public class Freud {
             for(int i = 0; i < valor.length; i++) {
                 if(valor[i] == null) return i;
             }
-            return -1;
+            return valor.length;
         }
         public boolean Add(String valor) {
             int pos = FirstUnused();
@@ -262,7 +262,6 @@ public class Freud {
         }
         public String Pop() {
             int pos = FirstUnused() - 1;
-            if(pos == -1) return "";
             String returner = Get(pos);
             RemoveAt(pos);
             return returner;
@@ -284,7 +283,7 @@ public class Freud {
             }
             return true;
         }
-        
+
         private boolean OutOfRange(int pos) {
             if(pos >= this.valor.length || pos < 0) return true;
             return false;
